@@ -4,6 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Our Streets, Our Words — A Grade 4 Language Map</title>
+<meta name="description" content="A Grade 4 EFAL digital language map built around six real neighbourhood stops in Sesotho, Afrikaans and English — match words, earn puzzle pieces, and see every home language counted as real classroom language.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Our Streets, Our Words">
+<meta property="og:description" content="A Grade 4 EFAL digital language map built around six real neighbourhood stops in Sesotho, Afrikaans and English.">
+<meta property="og:image" content="https://voigtdewald22-png.github.io/ourstreets.github.io/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Our Streets, Our Words">
+<meta name="twitter:description" content="A Grade 4 EFAL digital language map built around six real neighbourhood stops in Sesotho, Afrikaans and English.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A7%A9%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Karla:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
@@ -316,7 +325,7 @@
     25% { transform: translateX(-6px); }
     75% { transform: translateX(6px); }
   }
-  .match-tile.decoy-revealed { opacity: 0.45; cursor: default; border-style: dashed; }
+  .match-tile.decoy-revealed { opacity: 0.62; cursor: default; border-style: dashed; }
   .game-complete-banner {
     margin-top: 16px; padding: 14px 18px; border-radius: var(--radius-md);
     background: linear-gradient(90deg, var(--teal), var(--marigold)); color: #0A2E2D;
@@ -401,11 +410,24 @@
   footer.credits { text-align: center; padding: 30px 20px 10px; font-size: 0.8rem; color: var(--ink-soft); }
 
   .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .skip-link {
+    position: absolute; left: 12px; top: -60px; z-index: 1000;
+    background: var(--marigold); color: var(--marigold-ink); font-family: var(--font-display);
+    font-weight: 700; padding: 10px 18px; border-radius: 999px; text-decoration: none;
+    transition: top 0.15s ease;
+  }
+  .skip-link:focus { top: 12px; }
   :is(button, a, input, textarea, [tabindex]):focus-visible {
     outline: 3px solid var(--marigold); outline-offset: 2px; border-radius: 4px;
   }
-  .scene-upload-label:has(:focus-visible) {
+  .scene-upload-label:has(:focus-visible), .scene-upload-label:focus-within {
     outline: 3px solid var(--marigold); outline-offset: 2px; border-radius: 4px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important; animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important; scroll-behavior: auto !important;
+    }
   }
 
   ::-webkit-scrollbar { width: 10px; }
@@ -421,6 +443,7 @@
 </head>
 <body data-teacher-visible="false">
 
+<a class="skip-link" href="#appRoot">Skip to the map</a>
 <div id="srAnnounce" class="visually-hidden" role="status" aria-live="polite"></div>
 
 <header class="top">
@@ -538,7 +561,7 @@
   </div>
 </div>
 
-<main class="wrap" id="appRoot">
+<main class="wrap" id="appRoot" tabindex="-1">
   <h2 class="section-title" style="margin-top:28px;">Tap a stop on the map</h2>
   <p class="section-hint">Each pin is a place near school. Open it, play the matching game — watch out, a few answers on the right are decoys that don't match anything — and win a puzzle piece for your street collage.</p>
 
@@ -785,7 +808,6 @@
   };
 
   var ORDER = ["taxi", "spaza", "soccer", "salon", "hall", "school"];
-  var root = document.getElementById("appRoot");
   var panel = document.getElementById("detailPanel");
   var pins = Array.prototype.slice.call(document.querySelectorAll(".pin"));
   var teacherSwitch = document.getElementById("teacherSwitch");
@@ -1076,22 +1098,30 @@
       return /^[\u{1F000}-\u{1FFFF}\u2600-\u27BF]+$/u.test(text.trim());
     }
 
-    function tileEl(text, side) {
+    function tileEl(text, side, ariaLabel) {
       var el = document.createElement("button");
       el.type = "button";
       el.className = "match-tile" + (side === "left" && looksLikePicture(text) ? " picture" : "");
       el.textContent = text;
       el.setAttribute("data-value", text);
+      if (ariaLabel) el.setAttribute("aria-label", ariaLabel);
       return el;
     }
-
-    leftItems.forEach(function (text) { leftCol.appendChild(tileEl(text, "left")); });
-    rightItems.forEach(function (text) { rightCol.appendChild(tileEl(text, "right")); });
 
     function findPairRight(leftText) {
       var found = d.pairs.filter(function (p) { return p.left === leftText; });
       return found.length ? found[0].right : null;
     }
+
+    leftItems.forEach(function (text) {
+      var label = null;
+      if (looksLikePicture(text)) {
+        var right = findPairRight(text);
+        if (right) label = right.replace(/\s*\([^)]*\)\s*$/, "");
+      }
+      leftCol.appendChild(tileEl(text, "left", label));
+    });
+    rightItems.forEach(function (text) { rightCol.appendChild(tileEl(text, "right")); });
 
     function checkComplete() {
       if (Object.keys(matched).length === d.pairs.length) {
