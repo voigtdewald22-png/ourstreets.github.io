@@ -289,6 +289,8 @@
     font-size: 0.76rem; padding: 6px 10px; border-radius: 999px; white-space: nowrap;
   }
   .scene-warning { width: 100%; font-size: 0.78rem; color: var(--coral); }
+  .scene-admin { display: none; }
+  [data-teacher-visible="true"] .scene-admin { display: contents; }
 
   .game-block { margin-top: 22px; }
   .game-block h4 { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; margin: 0 0 4px; }
@@ -1149,8 +1151,10 @@
       '<div class="scene-block">' +
         '<button class="scene-btn" id="sceneBtn" type="button">🔊 Set the scene</button>' +
         '<span class="scene-status" id="sceneStatus"></span>' +
-        '<label class="scene-upload-label">Add your own sound<input type="file" accept="audio/*" id="sceneUpload" class="visually-hidden"></label>' +
-        '<button class="scene-clear" id="sceneClear" type="button" style="display:none;">Remove custom sound</button>' +
+        '<div class="scene-admin">' +
+          '<label class="scene-upload-label">Add your own sound<input type="file" accept="audio/*" id="sceneUpload" class="visually-hidden"></label>' +
+          '<button class="scene-clear" id="sceneClear" type="button" style="display:none;">Remove custom sound</button>' +
+        '</div>' +
       '</div>' +
       '<div class="teacher-box">' +
         '<h4>Assessment focus at this stop</h4>' +
