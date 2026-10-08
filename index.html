@@ -307,9 +307,9 @@
   .match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 18px; align-items: start; }
   .match-col { display: flex; flex-direction: column; gap: 10px; }
   .match-tile {
-    border: 2.5px solid var(--line); background: var(--paper); border-radius: var(--radius-sm);
+    border: 2.5px solid var(--line); background: var(--paper); color: var(--ink); border-radius: var(--radius-sm);
     padding: 12px 14px; font-weight: 600; font-size: 0.95rem; text-align: center;
-    transition: transform 0.15s ease, border-color 0.15s ease, background 0.2s ease;
+    transition: transform 0.15s ease, border-color 0.15s ease, background 0.2s ease, color 0.2s ease;
     min-height: 52px; display: flex; align-items: center; justify-content: center; line-height: 1.25;
   }
   .match-tile.picture { font-size: 1.9rem; }
@@ -325,7 +325,7 @@
     25% { transform: translateX(-6px); }
     75% { transform: translateX(6px); }
   }
-  .match-tile.decoy-revealed { opacity: 0.62; cursor: default; border-style: dashed; }
+  .match-tile.decoy-revealed { opacity: 0.62; cursor: default; border-style: dashed; color: var(--ink); }
   .game-complete-banner {
     margin-top: 16px; padding: 14px 18px; border-radius: var(--radius-md);
     background: linear-gradient(90deg, var(--teal), var(--marigold)); color: #0A2E2D;
